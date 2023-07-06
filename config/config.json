@@ -1,0 +1,40 @@
+{
+	"force" : true,
+	"log" : "DEBUG",
+	"delete_non_existing": false,
+	"top_dir": "",
+	"skip_replication": true,
+	"smb": {
+			"shares": ["all"],
+			"hide": false
+	},
+	"nfs": {
+			"exports": ["all"]
+	},
+	"s3": {
+		"buckets": ["all"]
+
+	},
+	"snapshot_policy": {
+		"policies": ["all"]
+
+	},
+	"quota": {
+			"directories": ["all"],
+			"additional_limit":0
+	},
+	"source": {
+		"address": "10.220.150.10",
+	        "port": "8000",
+	        "username": "berat",
+	        "password": "PASSWORD",
+	        "access_token": ""
+	    },
+	"destination": {
+	        "address": "10.220.151.90",
+	        "port": "8000",
+	        "username": "",
+	        "password": "",
+	        "access_token": "ACCESS_TOKEN"
+	}
+}
