@@ -102,12 +102,13 @@ this file and the diretory it is contained in should not be moved or renamed.
         "buckets": ["all"]
     },
     "snapshot_policy": {
-         "policies": ["all"]
-     },
-     "quota": {
-	"directories": ["all"],
-        "additional_limit":0
-    },
+		"policies": ["all"]
+
+	},
+	"quota": {
+			"directories": ["all"],
+			"additional_limit":0
+	},
     "source": {
         "address": "10.220.150.10",
         "port": "8000",
