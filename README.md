@@ -23,7 +23,7 @@ We have prepared automation to run cluster sync operations for the configuration
 
 *   Python 3.10
 *   Qumulo 6.0.1+ (without Snapshot Locking)
-*   Qumulo Python Bindings according to your Qumulo version
+
 
 ### Install Path:
 
