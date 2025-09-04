@@ -76,12 +76,10 @@ start with the configuration file.
 
 If you want to run QumuloSync by using a configuration file, please follow the below details.
 
-In the directory `config`, there is a file called `config.json` that must be modified
-in order to run the report.
+By default, in the directory `config`, there is a file called `config.json` that must be modified
+in order to run QumuloSync.
 
-This application depends upon the file name `config.json` in the subdirectory `config`. Due to that restriction,
-this file and the diretory it is contained in should not be moved or renamed.
-
+You can create new configuration files with the same structure according to your need. If you need this, you also need to create a schema.json file with the name of the configuration file. Such as test.json with test.schema.json.
 
 **Example:**
 
