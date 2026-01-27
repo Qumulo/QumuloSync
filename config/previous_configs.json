@@ -1,0 +1,26 @@
+{
+	"source" : {
+		"address": "groot.eng.qumulo.com",
+		"smb": {
+			"shares": []
+		},
+		"nfs": {
+			"exports": []
+		},
+		"quotas": {
+			"directories": []
+		}
+	},
+	"destination" : {
+		"address": "groot1.eng.qumulo.com",
+		"smb": {
+			"shares": []
+		},
+		"nfs": {
+			"exports": []
+		},
+		"quotas": {
+			"directories": []
+		}
+	}
+}
