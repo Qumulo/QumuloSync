@@ -4,8 +4,18 @@
 
 QumuloSync provides three main commands:
 - **sync**: Copy configuration from a source cluster to a destination cluster
-- **save**: Backup cluster configuration to a file (JSON or CSV)
+- **save**: Backup cluster configuration to a JSON file
 - **restore**: Restore cluster configuration from a backup file
+
+---
+
+## Requirements
+
+- **Python** 3.10 or later
+- **Qumulo Core** 7.4.4 or later (cluster firmware version)
+- **qumulo_api** 7.4.4 or later (`pip install qumulo_api`)
+
+The tool uses Qumulo REST API features (multitenancy, S3 bucket policies, strongly-typed dataclasses) that require Qumulo Core 7.4.4+. Older clusters are not supported.
 
 ---
 
@@ -34,10 +44,10 @@ QumuloSync provides three main commands:
   --address cluster.company.com --username admin --password SECRET \
   --output backup_20260127.json
 
-# Save only SMB shares and quotas to CSV
+# Save only SMB shares and quotas
 ./QumuloSync.ubuntu save \
   --address cluster.company.com --access-token "qqq_abc123..." \
-  --output backup_dir/ --format csv --resources smb_shares quotas
+  --output backup_smb_quotas.json --resources smb_shares quotas
 ```
 
 ### Restore Configuration from File
@@ -51,7 +61,7 @@ QumuloSync provides three main commands:
 # Restore only NFS exports with path prefix
 ./QumuloSync.ubuntu --force restore \
   --address new-cluster.company.com --username admin --password SECRET \
-  --input backup_dir/ --format csv --resources nfs_exports --top-dir /migrated
+  --input backup_20260127.json --resources nfs_exports --top-dir /migrated
 ```
 
 ---
@@ -66,13 +76,13 @@ QumuloSync provides three main commands:
 | **Directory Quotas** | Storage limits per directory | ✓ | ✓ |
 | **Snapshot Policies** | Automated snapshot schedules | ✓ | ✓ |
 | **S3 Settings** | S3 server configuration | ✓ | ✓ |
-| **Local Users** | Local user accounts | - | ✓ |
-| **Local Groups** | Local group accounts | - | ✓ |
+| **Local Users** | Local user accounts | - | Save only |
+| **Local Groups** | Local group accounts | - | Save only |
 
 ### Important Notes
 
 - **Snapshot Policies**: Policies are restored with `enabled: false` to prevent them from immediately creating snapshots on the destination cluster. Enable them manually after verifying the configuration.
-- **Local Users**: Provide `--user-password` (or enter it when prompted). If no password is provided, local user creation is skipped and a warning is logged.
+- **Local Users & Groups**: User and group accounts are saved for reference but are not created or modified during restore. During sync, any users or groups on the source cluster that are missing from the destination are logged as a warning.
 - **S3 Buckets**: Bucket policies and versioning settings are preserved during save/restore.
 - **S3 Settings**: S3 server settings (enabled, base_path) are synced before buckets to ensure S3 is enabled on the destination.
 
@@ -113,10 +123,10 @@ Sync options:
   -r, --resources TYPE [...] Resource types to sync: all, smb, nfs, s3, s3_settings, quota, snapshot_policy
   -t, --top-dir DIR          Prefix path on destination cluster
   -c, --config-file FILE     Use configuration file
-  --skip-replication         Sync all resources, not just replicated paths
   -d, --delete-non-existing  Delete resources on destination not on source
   --hide                     Add $ suffix to SMB share names
   --additional-limit N       Increase quota limits by N percent
+  -n, --dry-run              Show what would be synced without making changes
 ```
 
 ### save Command
@@ -128,14 +138,13 @@ QumuloSync save [OPTIONS]
 
 Required:
   --address HOST             Cluster hostname or IP
-  -o, --output PATH          Output file (JSON) or directory (CSV)
+  -o, --output PATH          Output file (JSON)
 
 Optional:
   --port PORT                Cluster port (default: 8000)
   --username USER            Cluster username
   --password PASS            Cluster password
   --access-token TOKEN       Cluster access token
-  --format FORMAT            Output format: json or csv (default: json)
   -r, --resources TYPE [...] Resource types to save:
                              local_users, local_groups, s3_settings,
                              smb_shares, nfs_exports, quotas,
@@ -151,20 +160,18 @@ QumuloSync [--force] restore [OPTIONS]
 
 Required:
   --address HOST             Cluster hostname or IP
-  -i, --input PATH           Input file (JSON) or directory (CSV)
+  -i, --input PATH           Input file (JSON)
 
 Optional:
   --port PORT                Cluster port (default: 8000)
   --username USER            Cluster username
   --password PASS            Cluster password
   --access-token TOKEN       Cluster access token
-  --format FORMAT            Input format: json or csv (default: json)
   -r, --resources TYPE [...] Resource types to restore:
-                             local_users, local_groups, s3_settings,
-                             smb_shares, nfs_exports, quotas,
-                             s3_buckets, snapshot_policies, or all
+                             s3_settings, smb_shares, nfs_exports,
+                             quotas, s3_buckets, snapshot_policies,
+                             or all
   -t, --top-dir DIR          Prefix path for all restored resources
-  --user-password PASS       Password for created local users (prompted if omitted)
 ```
 
 ---
@@ -176,7 +183,6 @@ Create a `config.json` file for repeated sync operations:
 ```json
 {
     "force": true,
-    "skip_replication": true,
     "top_dir": "",
     "delete_non_existing": false,
     
@@ -247,28 +253,6 @@ A single JSON file containing all configuration with metadata:
 }
 ```
 
-### CSV Format
-
-A directory containing separate CSV files for each resource type:
-
-```
-backup_dir/
-├── metadata.json          # Version, cluster, timestamp
-├── local_users.csv
-├── local_groups.csv
-├── s3_settings.csv
-├── smb_shares.csv
-├── nfs_exports.csv
-├── quotas.csv
-├── s3_buckets.csv
-└── snapshot_policies.csv
-```
-
-CSV format is useful for:
-- Reviewing/editing configuration in spreadsheet software
-- Selective restoration of specific resources
-- Integration with other tools
-
 ---
 
 ## Examples
@@ -335,8 +319,8 @@ NFS_EXPORT_READ, NFS_EXPORT_WRITE
 S3_BUCKETS_READ, S3_BUCKETS_WRITE
 QUOTA_READ, QUOTA_WRITE
 SNAPSHOT_POLICY_READ, SNAPSHOT_POLICY_WRITE
-LOCAL_USER_READ, LOCAL_USER_WRITE         # For save/restore of local users
-LOCAL_GROUP_READ, LOCAL_GROUP_WRITE       # For save/restore of local groups
+LOCAL_USER_READ                          # For save/sync user comparison
+LOCAL_GROUP_READ                         # For save/sync group comparison
 ANALYTICS_READ
 ```
 
