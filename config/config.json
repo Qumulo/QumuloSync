@@ -23,17 +23,17 @@
 			"additional_limit":0
 	},
 	"source": {
-		"address": "qwho.eng.qumulo.com",
+		"address": "source.example.com",
 	        "port": "8000",
-	        "username": "admin",
-	        "password": "Admin123",
+	        "username": "",
+	        "password": "",
 	        "access_token": ""
 	    },
 	"destination": {
-	        "address": "qwhat.eng.qumulo.com",
+	        "address": "destination.example.com",
 	        "port": "8000",
-	        "username": "admin",
-	        "password": "Admin123",
+	        "username": "",
+	        "password": "",
 	        "access_token": ""
 	}
 }

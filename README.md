@@ -70,12 +70,12 @@ The tool uses Qumulo REST API features (multitenancy, S3 bucket policies, strong
 
 | Resource Type | Description | Sync | Save/Restore |
 |---------------|-------------|------|--------------|
-| **SMB Shares** | Windows file shares with permissions | ✓ | ✓ |
-| **NFS Exports** | Unix/Linux exports with restrictions | ✓ | ✓ |
-| **S3 Buckets** | Object storage buckets with policies | ✓ | ✓ |
-| **Directory Quotas** | Storage limits per directory | ✓ | ✓ |
-| **Snapshot Policies** | Automated snapshot schedules | ✓ | ✓ |
-| **S3 Settings** | S3 server configuration | ✓ | ✓ |
+| **SMB Shares** | Windows file shares with permissions | Yes | Yes |
+| **NFS Exports** | Unix/Linux exports with restrictions | Yes | Yes |
+| **S3 Buckets** | Object storage buckets with policies | Yes | Yes |
+| **Directory Quotas** | Storage limits per directory | Yes | Yes |
+| **Snapshot Policies** | Automated snapshot schedules | Yes | Yes |
+| **S3 Settings** | S3 server configuration | Yes | Yes |
 | **Local Users** | Local user accounts | - | Save only |
 | **Local Groups** | Local group accounts | - | Save only |
 

@@ -1,6 +1,6 @@
 {
 	"source" : {
-		"address": "groot.eng.qumulo.com",
+		"address": "source.example.com",
 		"smb": {
 			"shares": []
 		},
@@ -12,7 +12,7 @@
 		}
 	},
 	"destination" : {
-		"address": "groot1.eng.qumulo.com",
+		"address": "destination.example.com",
 		"smb": {
 			"shares": []
 		},
