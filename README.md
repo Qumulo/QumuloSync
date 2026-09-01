@@ -17,6 +17,18 @@ QumuloSync provides three main commands:
 
 The tool uses Qumulo REST API features (multitenancy, S3 bucket policies, strongly-typed dataclasses) that require Qumulo Core 7.4.4+. Older clusters are not supported.
 
+### Available Binaries
+
+| Binary | OS / Requirement | Minimum glibc |
+| --- | --- | --- |
+| `QumuloSync.linux-compat` | Any x86_64 Linux with glibc >= 2.28 (RHEL/Rocky/Alma 8+, RHEL 9, Ubuntu 20.04+, Debian 11+) — recommended for RHEL | 2.28 |
+| `QumuloSync.ubuntu2204` | Ubuntu 22.04+ | 2.35 |
+| `QumuloSync.ubuntu2404` | Ubuntu 24.04+ | 2.39 |
+| `QumuloSync.exe` / `QumuloSync.win-legacy.exe` | Windows x64 | n/a |
+| `QumuloSync.macos` | macOS | n/a |
+
+Not sure which glibc your Linux host has? Run `ldd --version` and compare against the table above. When in doubt, `QumuloSync.linux-compat` has the broadest compatibility.
+
 ---
 
 ## Quick Start
@@ -322,7 +334,10 @@ SNAPSHOT_POLICY_READ, SNAPSHOT_POLICY_WRITE
 LOCAL_USER_READ                          # For save/sync user comparison
 LOCAL_GROUP_READ                         # For save/sync group comparison
 ANALYTICS_READ
+TENANT_READ                              # For tenant resolution during SMB/NFS sync
 ```
+
+These privileges are required on both the source and destination clusters, since tenant lookup runs against both.
 
 ---
 
@@ -341,6 +356,11 @@ ANALYTICS_READ
 - The source path must exist on the destination
 - Use `--top-dir` if paths differ between clusters
 - Ensure replication is complete before syncing
+
+### GLIBC Version Errors
+- An error like `` version `GLIBC_2.35' not found `` means the binary was built against a newer glibc than your host provides
+- Use `QumuloSync.linux-compat` instead, which only requires glibc >= 2.28 and runs on RHEL/Rocky/Alma 8+, RHEL 9, Ubuntu 20.04+, and Debian 11+
+- Check your host's glibc version with `ldd --version`
 
 ### Logs
 Each run creates a timestamped log file:
